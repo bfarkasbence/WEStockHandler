@@ -35,7 +35,7 @@ namespace WEStockHandler.Controllers
             _context.StockChangeModel.Add(stockChangeModel);
             await _context.SaveChangesAsync();
 
-            var productModel = await _context.ProductModel.FindAsync(stockChangeModel.Product.Id);
+            var productModel = await _context.ProductModel.FindAsync(stockChangeModel.ProductId);
             productModel.Quantity += stockChangeModel.Quantity;
             _context.Entry(productModel).State = EntityState.Modified;
             await _context.SaveChangesAsync();

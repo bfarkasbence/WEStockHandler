@@ -10,7 +10,7 @@ namespace WEStockHandler.Models
     {
         public int Id { get; set; }
         public DateTime DateTime { get; set; }
-        public ProductModel Product { get; set; }
+        public int ProductId { get; set; }
         public int Quantity { get; set; }
         public string StockChangeType { get; set; }
     }

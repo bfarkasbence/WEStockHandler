@@ -281,7 +281,7 @@ namespace WEStockHandler.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -291,8 +291,6 @@ namespace WEStockHandler.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("StockChangeModel");
                 });
@@ -353,13 +351,6 @@ namespace WEStockHandler.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("WEStockHandler.Models.StockChangeModel", b =>
-                {
-                    b.HasOne("WEStockHandler.Models.ProductModel", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId");
                 });
 #pragma warning restore 612, 618
         }
