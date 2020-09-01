@@ -246,7 +246,7 @@ namespace WEStockHandler.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FromDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -264,7 +264,7 @@ namespace WEStockHandler.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ToDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
