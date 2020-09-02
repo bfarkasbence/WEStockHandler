@@ -34,12 +34,12 @@ namespace WEStockHandler.Controllers
         {
             _context.StockChangeModel.Add(stockChangeModel);
             await _context.SaveChangesAsync();
-            await SavesToStockChangeToProductTable(stockChangeModel);
+            await SavesStockChangeToProductTable(stockChangeModel);
 
             return CreatedAtAction("GetStockChangeModel", new { id = stockChangeModel.Id }, stockChangeModel);
         }
 
-        private async Task SavesToStockChangeToProductTable(StockChangeModel stockChangeModel)
+        private async Task SavesStockChangeToProductTable(StockChangeModel stockChangeModel)
         {
             var productModel = await _context.ProductModel.FindAsync(stockChangeModel.ProductId);
             productModel.Quantity += stockChangeModel.Quantity;
@@ -56,17 +56,30 @@ namespace WEStockHandler.Controllers
                 var stockChange = ConvertCartItemToStockChange(item, dateTime);
                 _context.StockChangeModel.Add(stockChange);
                 await _context.SaveChangesAsync();
-                await SavesTockChangeToProductTable(stockChange);
+                await SavesStockChangeToProductTable(stockChange);
             }
 
             return Ok("Cart items are saved");
         }
 
+        private StockChangeModel ConvertCartItemToStockChange(CartItemModel item, DateTime dateTime)
+        {
+            StockChangeModel stockChange = new StockChangeModel
+            {
+                DateTime = dateTime,
+                ProductId = item.ProductId,
+                Quantity = item.Quantity*-1,
+                StockChangeType = "cart"
+            };
+
+            return stockChange;
+        }
 
         private bool StockChangeModelExists(int id)
         {
             return _context.StockChangeModel.Any(e => e.Id == id);
         }
+
 
         
     }
