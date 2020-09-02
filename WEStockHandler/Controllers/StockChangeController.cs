@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +28,25 @@ namespace WEStockHandler.Controllers
         {
             return await _context.StockChangeModel.ToListAsync();
         }
+
+        [HttpGet("date")]
+        public async Task<ActionResult<IEnumerable<StockChangeModel>>> GetStockChangeModelByTimeAndType(int from = 19000101, int to = 21001231, string type = "cart")
+        {
+            if (from > to)
+            {
+                var temp = from;
+                from = to;
+                to = temp;
+            }
+
+            var fromDate = ConvertIntToDate(from);
+            var ToDate = ConvertIntToDate(to).AddDays(1);
+
+            var filteredStockChanges = _context.StockChangeModel.Where(obj => obj.DateTime >= fromDate && obj.DateTime < ToDate && obj.StockChangeType == type);
+
+            return filteredStockChanges.ToList();
+        }
+        
 
                 
         [HttpPost]
@@ -80,7 +100,14 @@ namespace WEStockHandler.Controllers
             return _context.StockChangeModel.Any(e => e.Id == id);
         }
 
+        private DateTime ConvertIntToDate(int dateNumber)
+        {
+            var date = new DateTime();
 
-        
+            date = DateTime.ParseExact(dateNumber.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+
+            return date;
+        }
+
     }
 }
