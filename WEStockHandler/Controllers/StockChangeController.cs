@@ -34,14 +34,32 @@ namespace WEStockHandler.Controllers
         {
             _context.StockChangeModel.Add(stockChangeModel);
             await _context.SaveChangesAsync();
+            await SavesToStockChangeToProductTable(stockChangeModel);
 
+            return CreatedAtAction("GetStockChangeModel", new { id = stockChangeModel.Id }, stockChangeModel);
+        }
+
+        private async Task SavesToStockChangeToProductTable(StockChangeModel stockChangeModel)
+        {
             var productModel = await _context.ProductModel.FindAsync(stockChangeModel.ProductId);
             productModel.Quantity += stockChangeModel.Quantity;
             _context.Entry(productModel).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+        }
 
+        [HttpPost("cart")]
+        public async Task<IActionResult> PostCartItems(IEnumerable<CartItemModel> cartItems)
+        {
+            DateTime dateTime = DateTime.Now;
+            foreach (var item in cartItems)
+            {
+                var stockChange = ConvertCartItemToStockChange(item, dateTime);
+                _context.StockChangeModel.Add(stockChange);
+                await _context.SaveChangesAsync();
+                await SavesTockChangeToProductTable(stockChange);
+            }
 
-            return CreatedAtAction("GetStockChangeModel", new { id = stockChangeModel.Id }, stockChangeModel);
+            return Ok("Cart items are saved");
         }
 
 
@@ -49,5 +67,7 @@ namespace WEStockHandler.Controllers
         {
             return _context.StockChangeModel.Any(e => e.Id == id);
         }
+
+        
     }
 }
