@@ -10,6 +10,6 @@ namespace WEStockHandler.Models
     {
         public int Id { get; set; }
         public DateTime DateTime { get; set; }
-        public IdentityUser User { get; set; }
+        public int ConsultantId { get; set; }
     }
 }

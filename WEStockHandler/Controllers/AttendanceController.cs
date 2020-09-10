@@ -20,12 +20,10 @@ namespace WEStockHandler.Controllers
     public class AttendanceController : ControllerBase
     {
         private readonly ApplicationContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
 
-        public AttendanceController(ApplicationContext context, UserManager<IdentityUser> userManager)
+        public AttendanceController(ApplicationContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         
@@ -55,7 +53,7 @@ namespace WEStockHandler.Controllers
         
         
         [HttpPost]
-        public async Task<IActionResult> PostAttendanceModel(IEnumerable<string> consultants)
+        public async Task<IActionResult> PostAttendanceModel(IEnumerable<int> consultants)
         {
             var lastAttendanceDate = new DateTime();
 
@@ -76,18 +74,9 @@ namespace WEStockHandler.Controllers
                 {
                     AttendanceModel attendanceModel = new AttendanceModel();
                     attendanceModel.DateTime = time;
-                    var user = await _userManager.FindByNameAsync(consultant);
-
-                    if (user == null)
-                    {
-                        return NotFound("User not found!");
-                    }
-                    else
-                    {
-                        attendanceModel.User = user;
-                        _context.AttendanceModel.Add(attendanceModel);
-                        await _context.SaveChangesAsync();
-                    }
+                    attendanceModel.ConsultantId = consultant;
+                    _context.AttendanceModel.Add(attendanceModel);
+                    await _context.SaveChangesAsync();
                 }
 
                 return Ok("Done");
