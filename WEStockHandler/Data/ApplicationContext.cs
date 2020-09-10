@@ -24,5 +24,9 @@ namespace WEStockHandler.Data
         
 
         public DbSet<WEStockHandler.Models.StockChangeModel> StockChangeModel { get; set; }
+
+        
+
+        public DbSet<WEStockHandler.Models.ConsultantModel> ConsultantModel { get; set; }
     }
 }

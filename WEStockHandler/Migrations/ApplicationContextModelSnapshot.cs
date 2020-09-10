@@ -235,6 +235,24 @@ namespace WEStockHandler.Migrations
                     b.ToTable("AttendanceModel");
                 });
 
+            modelBuilder.Entity("WEStockHandler.Models.ConsultantModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ConsultantId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConsultantModel");
+                });
+
             modelBuilder.Entity("WEStockHandler.Models.ProductModel", b =>
                 {
                     b.Property<int>("Id")
