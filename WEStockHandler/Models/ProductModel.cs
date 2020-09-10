@@ -13,11 +13,8 @@ namespace WEStockHandler.Models
         public string ProductCode { get; set; }
         public int CartonCode { get; set; }
         public int Price { get; set; }
-        public int RequiredQuatity { get; set; }
+        public int RequiredQuantity { get; set; }
         public int Quantity { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime FromDate { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime ToDate { get; set; }
-    }
+        
+    }    
 }

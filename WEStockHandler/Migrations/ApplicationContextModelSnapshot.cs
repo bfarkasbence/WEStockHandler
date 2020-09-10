@@ -245,9 +245,6 @@ namespace WEStockHandler.Migrations
                     b.Property<int>("CartonCode")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FromDate")
-                        .HasColumnType("date");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -260,11 +257,8 @@ namespace WEStockHandler.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("RequiredQuatity")
+                    b.Property<int>("RequiredQuantity")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("ToDate")
-                        .HasColumnType("date");
 
                     b.HasKey("Id");
 

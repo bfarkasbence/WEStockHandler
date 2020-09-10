@@ -32,24 +32,6 @@ namespace WEStockHandler.Controllers
             return await _context.ProductModel.ToListAsync();
         }
 
-        [HttpGet("date")]
-        public async Task<ActionResult<IEnumerable<ProductModel>>> GetProductModelByTime(int from = 19000101, int to = 21001231)
-        {
-            if (from > to)
-            {
-                var temp = from;
-                from = to;
-                to = temp;
-            }
-
-            var fromDate = ConvertIntToDate(from);
-            var toDate = ConvertIntToDate(to).AddDays(1);
-
-            var filteredProducts = _context.ProductModel.Where(obj => obj.FromDate >= fromDate && obj.ToDate < toDate);
-
-            return filteredProducts.ToList();
-        }
-
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductModel>> GetProductModel(int id)
@@ -63,9 +45,7 @@ namespace WEStockHandler.Controllers
 
             return productModel;
         }
-
-
-
+                     
         
         [HttpPut("{id}")]
         public async Task<IActionResult> ModifyQuantityOfProductModel(int id, int quantity)
@@ -117,13 +97,5 @@ namespace WEStockHandler.Controllers
             return _context.ProductModel.Any(e => e.Id == id);
         }
 
-        private DateTime ConvertIntToDate(int dateNumber)
-        {
-            var date = new DateTime();
-
-            date = DateTime.ParseExact(dateNumber.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-
-            return date;
-        }
     }
 }
