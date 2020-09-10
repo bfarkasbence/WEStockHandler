@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ namespace WEStockHandler.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllHeaders")]
     public class LogoutController : ControllerBase
     {
         private readonly SignInManager<IdentityUser> _signInManager;

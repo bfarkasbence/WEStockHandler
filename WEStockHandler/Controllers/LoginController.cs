@@ -6,11 +6,13 @@ using WEStockHandler.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace WEStockHandler.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllHeaders")]
     public class LoginController : ControllerBase
     {
         private readonly SignInManager<IdentityUser> _signInManager;

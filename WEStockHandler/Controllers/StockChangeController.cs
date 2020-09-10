@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace WEStockHandler.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllHeaders")]
     public class StockChangeController : ControllerBase
     {
         private readonly ApplicationContext _context;

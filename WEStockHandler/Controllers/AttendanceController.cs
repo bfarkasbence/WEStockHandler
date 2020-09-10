@@ -53,7 +53,7 @@ namespace WEStockHandler.Controllers
         
         
         [HttpPost]
-        public async Task<IActionResult> PostAttendanceModel(IEnumerable<int> consultants)
+        public async Task<IActionResult> PostAttendanceModel(IEnumerable<ConsultantModel> consultants)
         {
             var lastAttendanceDate = new DateTime();
 
@@ -74,7 +74,7 @@ namespace WEStockHandler.Controllers
                 {
                     AttendanceModel attendanceModel = new AttendanceModel();
                     attendanceModel.DateTime = time;
-                    attendanceModel.ConsultantId = consultant;
+                    attendanceModel.ConsultantId = consultant.ConsultantId;
                     _context.AttendanceModel.Add(attendanceModel);
                     await _context.SaveChangesAsync();
                 }
