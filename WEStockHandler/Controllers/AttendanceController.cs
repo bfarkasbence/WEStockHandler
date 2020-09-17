@@ -53,6 +53,7 @@ namespace WEStockHandler.Controllers
                 (attendance, consultant) => new
                 {
                     Id = attendance.Id,
+                    ConsultantId = consultant.Id,
                     ConsultantName = consultant.Name,
                     DateTime = attendance.DateTime
                 })
@@ -64,7 +65,8 @@ namespace WEStockHandler.Controllers
             {
                 var withName = new AttendanceWithNameModel();
                 withName.Id = attendace.Id;
-                withName.ConsulantName = attendace.ConsultantName;
+                withName.ConsultantId = attendace.ConsultantId;
+                withName.ConsultantName = attendace.ConsultantName;
                 withName.DateTime = attendace.DateTime;
 
                 filteredAttendanceList.Add(withName);
