@@ -34,7 +34,7 @@ namespace WEStockHandler.Controllers
         }
 
         [HttpGet("date")]
-        public async Task<ActionResult<IEnumerable<AttendanceModel>>> GetAttendanceModelByTime(int from = 19000101, int to = 21001231)
+        public async Task<ActionResult<IEnumerable<AttendanceWithNameModel>>> GetAttendanceModelByTimeWithConsultantName(int from = 19000101, int to = 21001231)
         {
             if (from > to)
             {
@@ -46,9 +46,31 @@ namespace WEStockHandler.Controllers
             var fromDate = ConvertIntToDate(from);
             var toDate = ConvertIntToDate(to).AddDays(1);
 
-            var filteredAttendance = _context.AttendanceModel.Where(obj => obj.DateTime >= fromDate && obj.DateTime < toDate);
+            var filteredAttendance = _context.AttendanceModel
+                .Join(_context.ConsultantModel,
+                attendance => attendance.ConsultantId,
+                consultant => consultant.ConsultantId,
+                (attendance, consultant) => new
+                {
+                    Id = attendance.Id,
+                    ConsultantName = consultant.Name,
+                    DateTime = attendance.DateTime
+                })
+                .Where(obj => obj.DateTime >= fromDate && obj.DateTime < toDate);
 
-            return filteredAttendance.ToList();
+            var filteredAttendanceList = new List<AttendanceWithNameModel>();
+
+            foreach (var attendace in filteredAttendance)
+            {
+                var withName = new AttendanceWithNameModel();
+                withName.Id = attendace.Id;
+                withName.ConsulantName = attendace.ConsultantName;
+                withName.DateTime = attendace.DateTime;
+
+                filteredAttendanceList.Add(withName);
+            }
+                
+            return filteredAttendanceList;
         }
         
         
