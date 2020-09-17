@@ -53,7 +53,7 @@ namespace WEStockHandler.Controllers
                 (attendance, consultant) => new
                 {
                     Id = attendance.Id,
-                    ConsultantId = consultant.Id,
+                    ConsultantId = consultant.ConsultantId,
                     ConsultantName = consultant.Name,
                     DateTime = attendance.DateTime
                 })
