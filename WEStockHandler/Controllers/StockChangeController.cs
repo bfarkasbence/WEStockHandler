@@ -32,7 +32,7 @@ namespace WEStockHandler.Controllers
         }
 
         [HttpGet("date")]
-        public async Task<ActionResult<IEnumerable<StockChangeModel>>> GetStockChangeModelByTimeAndType(int from = 19000101, int to = 21001231, string type = "cart")
+        public async Task<ActionResult<IEnumerable<StockChangeWithProductNameModel>>> GetStockChangeModelByTimeAndTypeWithProductName(int from = 19000101, int to = 21001231, string type = "cart")
         {
             if (from > to)
             {
@@ -44,14 +44,53 @@ namespace WEStockHandler.Controllers
             var fromDate = ConvertIntToDate(from);
             var ToDate = ConvertIntToDate(to).AddDays(1);
 
-            var filteredStockChanges = _context.StockChangeModel.Where(obj => obj.DateTime >= fromDate && obj.DateTime < ToDate && obj.StockChangeType == type);
+            var filteredStockChanges = _context.StockChangeModel
+                .Join(_context.ProductModel,
+                      stockChange => stockChange.ProductId,
+                      product => product.Id,
+                      (stockChange, product) => new
+                      {
+                          ProductId = stockChange.ProductId,
+                          ProdductCode = product.ProductCode,
+                          ProductName = product.Name,
+                          ProductPrice = product.Price,
+                          Quantity = stockChange.Quantity * -1,
+                          DateTime = stockChange.DateTime,
+                          StockChangeType = stockChange.StockChangeType
+                      })
+                .Where(obj => obj.DateTime >= fromDate && obj.DateTime < ToDate && obj.StockChangeType == type);
+
+            var filteredStockChangeWithProductName = new List<StockChangeWithProductNameModel>();
 
             foreach (var change in filteredStockChanges)
             {
-                change.Quantity = change.Quantity * -1;
+                var inTheList = false;
+                            
+                foreach (var product in filteredStockChangeWithProductName)
+                    if (product.ProductId == change.ProductId)
+                    {
+                        inTheList = true;
+                        product.Quantity += change.Quantity;
+                        break;
+                    }
+
+                if (!inTheList)
+                {
+                    var withProductName = new StockChangeWithProductNameModel();
+
+                    withProductName.ProductId = change.ProductId;
+                    withProductName.ProductCode = change.ProdductCode;
+                    withProductName.ProductName = change.ProductName;
+                    withProductName.ProductPrice = change.ProductPrice;
+                    withProductName.Quantity = change.Quantity;
+                    withProductName.DateTime = change.DateTime;
+                    withProductName.StockChangeType = change.StockChangeType;
+
+                    filteredStockChangeWithProductName.Add(withProductName);
+                }
             }
 
-            return filteredStockChanges.ToList();
+            return filteredStockChangeWithProductName;
         }
 
         [HttpGet("sum")]
