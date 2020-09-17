@@ -46,8 +46,43 @@ namespace WEStockHandler.Controllers
 
             var filteredStockChanges = _context.StockChangeModel.Where(obj => obj.DateTime >= fromDate && obj.DateTime < ToDate && obj.StockChangeType == type);
 
+            foreach (var change in filteredStockChanges)
+            {
+                change.Quantity = change.Quantity * -1;
+            }
+
             return filteredStockChanges.ToList();
         }
+
+        [HttpGet("sum")]
+        public int GetTodaySumSold()
+        {
+            var sum = 0;
+
+            var today = DateTime.Today;
+
+            var filteredStockChanges = _context.StockChangeModel
+                .Join(_context.ProductModel,
+                      stockChange => stockChange.ProductId,
+                      product => product.Id,
+                      (stockChange, product) => new
+                        {
+                            Id = stockChange.Id,
+                            ProductName = product.Name,
+                            ProductPrice =product.Price,
+                            Quantity = stockChange.Quantity*-1,
+                            DateTime = stockChange.DateTime,
+                            StockChangeType = stockChange.StockChangeType
+                        })
+                .Where(obj => obj.DateTime >= today && obj.DateTime < today.AddDays(1) && obj.StockChangeType == "cart");
+
+            foreach (var change in filteredStockChanges)
+            {
+                sum += change.Quantity*change.ProductPrice;
+            }
+
+            return sum;
+        } 
         
 
                 
