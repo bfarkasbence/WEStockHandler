@@ -83,7 +83,7 @@ namespace WEStockHandler.Controllers
             }
 
             else
-                return Ok("Today attendance is already filled");
+                return BadRequest("Today attendance is already filled");
             
         }
 
