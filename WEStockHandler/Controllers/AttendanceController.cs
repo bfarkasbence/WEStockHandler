@@ -79,35 +79,19 @@ namespace WEStockHandler.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAttendanceModel(IEnumerable<ConsultantModel> consultants)
         {
-            var lastAttendanceDate = new DateTime();
-
-            try
-            {
-                lastAttendanceDate = _context.AttendanceModel.Max(e => e.DateTime);
-            }
-            catch (Exception)
-            {
-                lastAttendanceDate = DateTime.Now.AddDays(-1000);
-            }
 
             DateTime time = DateTime.Now;
 
-            if (lastAttendanceDate.Date < time.Date)
+            foreach (var consultant in consultants)
             {
-                foreach (var consultant in consultants)
-                {
-                    AttendanceModel attendanceModel = new AttendanceModel();
-                    attendanceModel.DateTime = time;
-                    attendanceModel.ConsultantId = consultant.ConsultantId;
-                    _context.AttendanceModel.Add(attendanceModel);
-                    await _context.SaveChangesAsync();
-                }
-
-                return Ok("Done");
+                AttendanceModel attendanceModel = new AttendanceModel();
+                attendanceModel.DateTime = time;
+                attendanceModel.ConsultantId = consultant.ConsultantId;
+                _context.AttendanceModel.Add(attendanceModel);
+                await _context.SaveChangesAsync();
             }
 
-            else
-                return BadRequest("Today attendance is already filled");
+            return Ok("Done");
             
         }
 
