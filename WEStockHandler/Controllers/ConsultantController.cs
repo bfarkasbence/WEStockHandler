@@ -42,6 +42,29 @@ namespace WEStockHandler.Controllers
             return consultantModel;
         }
 
+        [HttpGet("today")]
+        public async Task<ActionResult<IEnumerable<ConsultantModel>>> GetConsultantsWithoutTodayAttendance()
+        {
+            var today = DateTime.Today;
+
+            var allConsultants = await _context.ConsultantModel.ToListAsync();
+            var todayAttendance = await _context.AttendanceModel.Where(obj => obj.DateTime >= today && obj.DateTime < today.AddDays(1)).ToListAsync();
+
+            foreach (var attendante in todayAttendance)
+            {
+                foreach (var consultant in allConsultants)
+                {
+                    if (attendante.ConsultantId == consultant.ConsultantId)
+                    {
+                        allConsultants.Remove(consultant);
+                        break;
+                    }
+                }
+            }
+
+            return allConsultants;
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutConsultantModel(int id, ConsultantModel consultantModel)
         {
