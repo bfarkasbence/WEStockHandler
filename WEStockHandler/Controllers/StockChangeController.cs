@@ -173,7 +173,7 @@ namespace WEStockHandler.Controllers
             return Ok("Storno items are saved");
         }
 
-        private async Task SavesStornoToProductTable(StockChangeModel stockChangeModel)
+        private async Task<IActionResult> SavesStornoToProductTable(StockChangeModel stockChangeModel)
         {
             var productModel = await _context.ProductModel.FindAsync(stockChangeModel.ProductId);
             var lastProduct = await _context.ProductModel
@@ -186,6 +186,8 @@ namespace WEStockHandler.Controllers
             lastProduct[0].Quantity += stockChangeModel.Quantity;
             _context.Entry(lastProduct[0]).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         private StockChangeModel ConvertCartItemToStockChange(CartItemModel item, DateTime dateTime, string type, int multiplier)
