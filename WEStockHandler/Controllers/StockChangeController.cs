@@ -149,7 +149,7 @@ namespace WEStockHandler.Controllers
             DateTime dateTime = DateTime.Now;
             foreach (var item in cartItems)
             {
-                var stockChange = ConvertCartItemToStockChange(item, dateTime);
+                var stockChange = ConvertCartItemToStockChange(item, dateTime, "cart", -1);
                 _context.StockChangeModel.Add(stockChange);
                 await _context.SaveChangesAsync();
                 await SavesStockChangeToProductTable(stockChange);
@@ -158,18 +158,49 @@ namespace WEStockHandler.Controllers
             return Ok("Cart items are saved");
         }
 
-        private StockChangeModel ConvertCartItemToStockChange(CartItemModel item, DateTime dateTime)
+        [HttpPost("storno")]
+        public async Task<IActionResult> PostStornoCartItems(IEnumerable<CartItemModel> cartItems)
+        {
+            DateTime dateTime = DateTime.Now;
+            foreach (var item in cartItems)
+            {
+                var stockChange = ConvertCartItemToStockChange(item, dateTime, "storno", 1);
+                _context.StockChangeModel.Add(stockChange);
+                await _context.SaveChangesAsync();
+                await SavesStornoToProductTable(stockChange);
+            }
+
+            return Ok("Storno items are saved");
+        }
+
+        private async Task SavesStornoToProductTable(StockChangeModel stockChangeModel)
+        {
+            var productModel = await _context.ProductModel.FindAsync(stockChangeModel.ProductId);
+            var lastProduct = await _context.ProductModel
+                .Where(obj => obj.CartonCode == productModel.CartonCode)
+                .OrderByDescending(obj => obj.Id)
+                .ToListAsync();
+
+
+
+            lastProduct[0].Quantity += stockChangeModel.Quantity;
+            _context.Entry(lastProduct[0]).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        private StockChangeModel ConvertCartItemToStockChange(CartItemModel item, DateTime dateTime, string type, int multiplier)
         {
             StockChangeModel stockChange = new StockChangeModel
             {
                 DateTime = dateTime,
                 ProductId = item.ProductId,
-                Quantity = item.Quantity*-1,
-                StockChangeType = "cart"
+                Quantity = item.Quantity*multiplier,
+                StockChangeType = type
             };
 
             return stockChange;
         }
+
 
         private bool StockChangeModelExists(int id)
         {
