@@ -32,6 +32,14 @@ namespace WEStockHandler.Controllers
             return await _context.ProductModel.ToListAsync();
         }
 
+        [HttpGet("fillup")]
+        public async Task<ActionResult<IEnumerable<ProductModel>>> GetProductsToFillUp()
+        {
+            var products = await _context.ProductModel
+                .Where(obj => obj.Quantity != obj.RequiredQuantity).ToListAsync();
+                
+            return products;
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductModel>> GetProductModel(int id)
