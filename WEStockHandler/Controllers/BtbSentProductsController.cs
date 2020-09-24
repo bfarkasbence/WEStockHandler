@@ -31,9 +31,40 @@ namespace WEStockHandler.Controllers
         }
 
         [HttpGet("sent")]
-        public async Task<ActionResult<IEnumerable<BtbSentProductsModel>>> GetSentProducts()
+        public async Task<ActionResult<IEnumerable<SentProductModel>>> GetSentProducts()
         {
-            return await _context.BtbSentProductModel.Where(obj => obj.Status == "sent").ToListAsync();
+            var sentProducts = new List<SentProductModel>();
+            var sentBtbtProducts = await _context.BtbSentProductModel.Where(obj => obj.Status == "sent").ToListAsync();
+
+            foreach (var product in sentBtbtProducts)
+            {
+                var inTheList = false;
+
+                foreach (var item in sentProducts)
+                {
+                    if (product.ProductId == item.ProductId)
+                    {
+                        inTheList = true;
+                        item.SentQuantity += product.SentQuantity;
+                        break;
+                    }
+                }
+
+                if (!inTheList)
+                {
+                    var newSentProduct = new SentProductModel();
+
+                    newSentProduct.ProductId = product.ProductId;
+                    newSentProduct.SentQuantity = product.SentQuantity;
+                    newSentProduct.RecievedQuantity = 0;
+                    newSentProduct.ProductName = "none";
+                    newSentProduct.ProductCode = "none";
+
+                    sentProducts.Add(newSentProduct);
+                }
+            }
+
+            return sentProducts;
         }
 
         [HttpGet("{id}")]
