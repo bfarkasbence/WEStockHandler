@@ -36,24 +36,39 @@ namespace WEStockHandler.Controllers
         public async Task<ActionResult<IEnumerable<ProductFillUpModel>>> GetProductsToFillUp()
         {
             var products = await _context.ProductModel
-                .Where(obj => obj.Quantity != obj.RequiredQuantity).ToListAsync();
+                .Where(obj => obj.Quantity != obj.RequiredQuantity)
+                .ToListAsync();
+
+            var sentProducts = await _context.BtbSentProductModel
+                .Where(obj => obj.Status == "sent")
+                .ToListAsync();
 
             var fillUpProducts = new List<ProductFillUpModel>();
+
             
             foreach (var product in products)
             {
-                var fillup = new ProductFillUpModel
+                foreach (var item in sentProducts)
                 {
-                    Id = product.Id,
-                    Name = product.Name,
-                    ProductCode = product.ProductCode,
-                    CartonCode = product.CartonCode,
-                    RequiredQuantity = product.RequiredQuantity,
-                    SendQuantity = product.RequiredQuantity - product.Quantity
-                };
-                fillUpProducts.Add(fillup);
+                    if (item.ProductId == product.Id)
+                    {
+                        product.Quantity = product.Quantity + item.SentQuantity;
+                    }
+                }
+                if (product.RequiredQuantity - product.Quantity > 0)
+                {
+                    var fillup = new ProductFillUpModel
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        ProductCode = product.ProductCode,
+                        CartonCode = product.CartonCode,
+                        RequiredQuantity = product.RequiredQuantity,
+                        SendQuantity = product.RequiredQuantity - product.Quantity
+                    };
+                    fillUpProducts.Add(fillup);
+                }
             }
-            
             return fillUpProducts;
         }
 
