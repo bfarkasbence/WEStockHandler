@@ -1,0 +1,90 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WEStockHandler.Data;
+using WEStockHandler.Models;
+
+namespace WEStockHandler.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    [EnableCors("AllowAllHeaders")]
+
+    public class BtbSentProductsController : ControllerBase
+    {
+        private readonly ApplicationContext _context;
+
+        public BtbSentProductsController(ApplicationContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BtbSentProductsModel>>> GetBtnSentProductModel()
+        {
+            return await _context.BtbSentProductModel.ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BtbSentProductsModel>> GetBtbSentProductsModel(int id)
+        {
+            var btbSentProductsModel = await _context.BtbSentProductModel.FindAsync(id);
+
+            if (btbSentProductsModel == null)
+            {
+                return NotFound();
+            }
+
+            return btbSentProductsModel;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBtbSentProductsModel(int id, BtbSentProductsModel btbSentProductsModel)
+        {
+            if (id != btbSentProductsModel.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(btbSentProductsModel).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BtbSentProductsModelExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<BtbSentProductsModel>> PostBtbSentProductsModel(BtbSentProductsModel btbSentProductsModel)
+        {
+            _context.BtbSentProductModel.Add(btbSentProductsModel);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetBtbSentProductsModel", new { id = btbSentProductsModel.Id }, btbSentProductsModel);
+        }
+
+
+        private bool BtbSentProductsModelExists(int id)
+        {
+            return _context.BtbSentProductModel.Any(e => e.Id == id);
+        }
+    }
+}

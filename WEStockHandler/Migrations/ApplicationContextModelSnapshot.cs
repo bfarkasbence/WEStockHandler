@@ -251,7 +251,7 @@ namespace WEStockHandler.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BtnSentProductModel");
+                    b.ToTable("BtbSentProductModel");
                 });
 
             modelBuilder.Entity("WEStockHandler.Models.ConsultantModel", b =>
