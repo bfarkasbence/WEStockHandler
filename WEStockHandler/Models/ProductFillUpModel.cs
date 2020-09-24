@@ -11,7 +11,7 @@ namespace WEStockHandler.Models
         public string Name { get; set; }
         public string ProductCode { get; set; }
         public int CartonCode { get; set; }
-        public int RequiedQuantity { get; set; }
+        public int RequiredQuantity { get; set; }
         public int SendQuantity { get; set; }
 
     }

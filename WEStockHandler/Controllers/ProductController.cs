@@ -33,12 +33,28 @@ namespace WEStockHandler.Controllers
         }
 
         [HttpGet("fillup")]
-        public async Task<ActionResult<IEnumerable<ProductModel>>> GetProductsToFillUp()
+        public async Task<ActionResult<IEnumerable<ProductFillUpModel>>> GetProductsToFillUp()
         {
             var products = await _context.ProductModel
                 .Where(obj => obj.Quantity != obj.RequiredQuantity).ToListAsync();
-                
-            return products;
+
+            var fillUpProducts = new List<ProductFillUpModel>();
+            
+            foreach (var product in products)
+            {
+                var fillup = new ProductFillUpModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    ProductCode = product.ProductCode,
+                    CartonCode = product.CartonCode,
+                    RequiredQuantity = product.RequiredQuantity,
+                    SendQuantity = product.RequiredQuantity - product.Quantity
+                };
+                fillUpProducts.Add(fillup);
+            }
+            
+            return fillUpProducts;
         }
 
         [HttpGet("{id}")]
