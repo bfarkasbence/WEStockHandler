@@ -12,5 +12,6 @@ namespace WEStockHandler.Models
         public string ProductCode { get; set; }
         public int SentQuantity { get; set; }
         public int RecievedQuantity { get; set; }
+        public List<int> BtbIds { get; set; }
     }
 }

@@ -34,7 +34,21 @@ namespace WEStockHandler.Controllers
         public async Task<ActionResult<IEnumerable<SentProductModel>>> GetSentProducts()
         {
             var sentProducts = new List<SentProductModel>();
-            var sentBtbtProducts = await _context.BtbSentProductModel.Where(obj => obj.Status == "sent").ToListAsync();
+            var sentBtbtProducts = await _context.BtbSentProductModel
+                .Join(_context.ProductModel,
+                btbSentProduct => btbSentProduct.ProductId,
+                product => product.Id,
+                (btbSentProduct, product) => new
+                {
+                    ProductId = btbSentProduct.ProductId,
+                    ProductCode = product.ProductCode,
+                    ProductName = product.Name,
+                    SentQuantity = btbSentProduct.SentQuantity,
+                    Status = btbSentProduct.Status,
+                    BtbId = btbSentProduct.Id
+                })
+                .Where(obj => obj.Status == "sent")
+                .ToListAsync();
 
             foreach (var product in sentBtbtProducts)
             {
@@ -46,19 +60,22 @@ namespace WEStockHandler.Controllers
                     {
                         inTheList = true;
                         item.SentQuantity += product.SentQuantity;
+                        item.BtbIds.Add(product.BtbId);
                         break;
                     }
                 }
 
                 if (!inTheList)
                 {
-                    var newSentProduct = new SentProductModel();
-
-                    newSentProduct.ProductId = product.ProductId;
-                    newSentProduct.SentQuantity = product.SentQuantity;
-                    newSentProduct.RecievedQuantity = 0;
-                    newSentProduct.ProductName = "none";
-                    newSentProduct.ProductCode = "none";
+                    var newSentProduct = new SentProductModel
+                    {
+                        ProductId = product.ProductId,
+                        SentQuantity = product.SentQuantity,
+                        RecievedQuantity = product.SentQuantity,
+                        ProductName = product.ProductName,
+                        ProductCode = product.ProductCode,
+                        BtbIds = new List<int> {product.BtbId}
+                    };
 
                     sentProducts.Add(newSentProduct);
                 }
