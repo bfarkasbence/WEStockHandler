@@ -11,5 +11,6 @@ namespace WEStockHandler.Models
         public int ProductId { get; set; }
         public DateTime DateTime { get; set; }
         public int SentQuantity { get; set; }
+        public string Status { get; set; }
     }
 }

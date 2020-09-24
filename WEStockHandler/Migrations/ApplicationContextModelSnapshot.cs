@@ -249,6 +249,9 @@ namespace WEStockHandler.Migrations
                     b.Property<int>("SentQuantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("BtbSentProductModel");

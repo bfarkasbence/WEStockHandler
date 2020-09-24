@@ -92,7 +92,8 @@ namespace WEStockHandler.Controllers
             {
                 ProductId = item.Id,
                 DateTime = dateTime,
-                SentQuantity = item.SendQuantity
+                SentQuantity = item.SendQuantity,
+                Status = "sent"
             };
 
             return btbProduct;
