@@ -30,6 +30,12 @@ namespace WEStockHandler.Controllers
             return await _context.BtbSentProductModel.ToListAsync();
         }
 
+        [HttpGet("sent")]
+        public async Task<ActionResult<IEnumerable<BtbSentProductsModel>>> GetSentProducts()
+        {
+            return await _context.BtbSentProductModel.Where(obj => obj.Status == "sent").ToListAsync();
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<BtbSentProductsModel>> GetBtbSentProductsModel(int id)
         {
@@ -78,9 +84,12 @@ namespace WEStockHandler.Controllers
             DateTime dateTime = DateTime.Now;
             foreach (var product in productsToFill)
             {
-                var btbSentProduct = ConvertFillUpModelToBtbSentProductsModel(product, dateTime);
-                _context.BtbSentProductModel.Add(btbSentProduct);
-                await _context.SaveChangesAsync();
+                if (product.SendQuantity >= 0)
+                {
+                    var btbSentProduct = ConvertFillUpModelToBtbSentProductsModel(product, dateTime);
+                    _context.BtbSentProductModel.Add(btbSentProduct);
+                    await _context.SaveChangesAsync();
+                }
             }
 
             return  Ok("Items saved");
