@@ -233,6 +233,27 @@ namespace WEStockHandler.Migrations
                     b.ToTable("AttendanceModel");
                 });
 
+            modelBuilder.Entity("WEStockHandler.Models.BtbSentProductsModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SentQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BtnSentProductModel");
+                });
+
             modelBuilder.Entity("WEStockHandler.Models.ConsultantModel", b =>
                 {
                     b.Property<int>("Id")

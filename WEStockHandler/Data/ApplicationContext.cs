@@ -28,5 +28,8 @@ namespace WEStockHandler.Data
         
 
         public DbSet<WEStockHandler.Models.ConsultantModel> ConsultantModel { get; set; }
+
+
+        public DbSet<WEStockHandler.Models.BtbSentProductsModel> BtnSentProductModel { get; set; }
     }
 }
