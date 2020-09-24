@@ -76,15 +76,16 @@ namespace WEStockHandler.Controllers
 
                 if (!inTheList)
                 {
-                    var withProductName = new StockChangeWithProductNameModel();
-
-                    withProductName.ProductId = change.ProductId;
-                    withProductName.ProductCode = change.ProdductCode;
-                    withProductName.ProductName = change.ProductName;
-                    withProductName.ProductPrice = change.ProductPrice;
-                    withProductName.Quantity = change.Quantity;
-                    withProductName.DateTime = change.DateTime;
-                    withProductName.StockChangeType = change.StockChangeType;
+                    var withProductName = new StockChangeWithProductNameModel
+                    {
+                        ProductId = change.ProductId,
+                        ProductCode = change.ProdductCode,
+                        ProductName = change.ProductName,
+                        ProductPrice = change.ProductPrice,
+                        Quantity = change.Quantity,
+                        DateTime = change.DateTime,
+                        StockChangeType = change.StockChangeType
+                    };
 
                     filteredStockChangeWithProductName.Add(withProductName);
                 }
