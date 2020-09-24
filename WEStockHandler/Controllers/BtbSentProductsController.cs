@@ -14,7 +14,7 @@ namespace WEStockHandler.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowAllHeaders")]
-
+    
     public class BtbSentProductsController : ControllerBase
     {
         private readonly ApplicationContext _context;
@@ -73,14 +73,30 @@ namespace WEStockHandler.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BtbSentProductsModel>> PostBtbSentProductsModel(BtbSentProductsModel btbSentProductsModel)
+        public async Task<ActionResult<BtbSentProductsModel>> PostBtbSentProductsModel(List<ProductFillUpModel> productsToFill)
         {
-            _context.BtbSentProductModel.Add(btbSentProductsModel);
-            await _context.SaveChangesAsync();
+            DateTime dateTime = DateTime.Now;
+            foreach (var product in productsToFill)
+            {
+                var btbSentProduct = ConvertFillUpModelToBtbSentProductsModel(product, dateTime);
+                _context.BtbSentProductModel.Add(btbSentProduct);
+                await _context.SaveChangesAsync();
+            }
 
-            return CreatedAtAction("GetBtbSentProductsModel", new { id = btbSentProductsModel.Id }, btbSentProductsModel);
+            return  Ok("Items saved");
         }
 
+        private BtbSentProductsModel ConvertFillUpModelToBtbSentProductsModel(ProductFillUpModel item, DateTime dateTime)
+        {
+            BtbSentProductsModel btbProduct = new BtbSentProductsModel
+            {
+                ProductId = item.Id,
+                DateTime = dateTime,
+                SentQuantity = item.SendQuantity
+            };
+
+            return btbProduct;
+        }
 
         private bool BtbSentProductsModelExists(int id)
         {
